@@ -31,7 +31,7 @@ pipeline{
             steps{
                 script{
                     withSonarQubeEnv(credentialsId: 'jenkins-sonarqube'){
-                    sh "mvn sonar:sonar"
+                    sh "mvn sonar:sonar -Dsonar.projectKey=register-app -Dsonar.host.url=http://18.61.177.240:9000 -Dsonar.login=admin -Dsonar.password=admin123"
                     }
                 }
             }
