@@ -6,6 +6,9 @@ pipeline{
         maven 'maven3'
         jdk 'java17'
     }
+    options {
+        timeout(time: 30, unit: 'MINUTES')
+    }
     stages{
         stage('Cleanup'){
             steps{
@@ -33,6 +36,13 @@ pipeline{
                     withSonarQubeEnv(credentialsId: 'jenkins-sonarqube'){
                     sh "mvn sonar:sonar -Dsonar.projectKey=register-app -Dsonar.host.url=http://18.61.177.240:9000 -Dsonar.login=admin -Dsonar.password=admin123"
                     }
+                }
+            }
+        }
+        stage("SonarQube Quality Gate"){
+            steps{
+                timeout(time: 10, unit: 'MINUTES'){
+                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube'
                 }
             }
         }
