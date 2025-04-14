@@ -7,17 +7,15 @@ pipeline{
         jdk 'java17'
     }
     stages{
-        stage('Cleanup workspace'){
+        stage('Cleanup'){
             steps{
                 cleanWs()
             }
-
         }
         stage('Checkout'){
             steps{
-                git branch: 'main' ,credentialsId: 'github' ,url: 'https://github.com/chait21/register-app_from_Ashfaque.git'
+                git branch: 'main' ,credentialsId: 'github-token' ,url: 'https://github.com/chait21/register-app_from_Ashfaque.git'
             }
-
         }
         stage('Build'){
             steps{
@@ -27,22 +25,6 @@ pipeline{
         stage('Test'){
             steps{
                 sh 'mvn test'
-            }
-        }
-        stage('SonarQubeAnalysis'){
-            steps{
-                script{
-                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
-                    sh "mvn sonar:sonar"
-                    }
-                }
-            }
-        }
-        stage("Quality Gate"){
-           steps {
-               script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
-                }	
             }
         }
     }
